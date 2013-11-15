@@ -5,7 +5,7 @@ use Sabre\DAV\File,
     MimetypeHelper,
     steam_object;
 
-require dirname(__FILE__) . "/../Lib/toolkit.php";
+require_once dirname(__FILE__) . "/../Lib/toolkit.php";
 
 class WebDavSteamFile extends File{
 

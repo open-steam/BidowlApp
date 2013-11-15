@@ -4,7 +4,7 @@ namespace OpenSteam\BidWebdavBundle\Webdav;
 use Sabre\DAV\File,
     steam_object;
 
-require dirname(__FILE__) . "/../Lib/toolkit.php";
+require_once dirname(__FILE__) . "/../Lib/toolkit.php";
 
 class WebDavBidRapidfeedback extends File
 {
