@@ -11,10 +11,9 @@ use Sabre\DAV\Collection,
     steam_trashbin,
     steam_user,
     steam_messageboard,
-    steam_docextern,
     Exception;
 
-class WebDavSteamContainer extends Collection
+class WebDavBidGallery extends Collection
 {
 
     protected $steamContainer;
@@ -67,7 +66,7 @@ class WebDavSteamContainer extends Collection
         if (preg_match("/^" . $id . "__/", $identifier)) {
             $name = $name . " (#". $id .")";
         }
-        return str_replace("?", "", $name);
+        return str_replace("?", "", $name) . ".galerie";
     }
 
     public function setName($newName){
@@ -89,17 +88,8 @@ class WebDavSteamContainer extends Collection
             return false;
         } else if ($object instanceof steam_container) {
             $objType = $object->get_attribute(OBJ_TYPE);
-            $collectionType = $object->get_attribute("bid:collectiontype");
             if ($objType === "container_portal_bid") {
                 return new WebDavBidPortal($object);
-            } else if ($collectionType === "gallery") {
-                return new WebDavBidGallery($object);
-            } else if ($objType === "RAPIDFEEDBACK_CONTAINER") {
-                return new WebDavBidRapidfeedback($object);
-            } else if ($objType === "container_wiki_koala") {
-                return new WebDavWiki($object);
-            } else if ($objType === "container_pyramiddiscussion") {
-                return new WebDavBidPyramiddiscussion($object);
             }
             return new WebDavSteamContainer($object);
         } else if ($object instanceof steam_document) {
@@ -124,8 +114,6 @@ class WebDavSteamContainer extends Collection
             }
         } else if ($object instanceof steam_messageboard) {
             return new WebDavBidForum($object);
-        } else if ($object instanceof steam_docextern) {
-            return new WebDavWeblink($object);
         } else {
             return false;
         }
