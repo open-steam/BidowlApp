@@ -4,6 +4,8 @@ namespace OpenSteam\BidWebdavBundle\Webdav;
 use Sabre\DAV\File,
     steam_object;
 
+require dirname(__FILE__) . "/../Lib/toolkit.php";
+
 class WebDavWeblink extends File
 {
 
@@ -16,12 +18,12 @@ class WebDavWeblink extends File
 
     public function getName()
     {
-        return str_replace("?", "", $this->steam_obj->get_name()) . ".url";
+        return getObjectName($this->steam_obj) . ".url";
     }
 
     public function getSize()
     {
-        return "0";
+        return strlen($this->get());
     }
 
     public function getContentType()
@@ -31,7 +33,8 @@ class WebDavWeblink extends File
 
     public function get()
     {
-        return "";
+        return "[InternetShortcut]\n" .
+               "URL=" . $this->steam_obj->get_url();
     }
 
     public function put($data)
@@ -50,18 +53,18 @@ class WebDavWeblink extends File
 
     public function getLastModified()
     {
-        return $this->steam_obj->get_attribute(DOC_LAST_MODIFIED);
+        return $this->steam_obj->get_attribute(OBJ_LAST_CHANGED);
     }
 
     public function setName($newName)
     {
-        if ($this->steam_obj->check_access_write()) {
+        /*if ($this->steam_obj->check_access_write()) {
             $this->name = $newName;
             $this->steam_obj->set_name($newName);
             return $newName;
         } else {
             parent::setName($newName);
-        }
+        }*/
     }
 
 

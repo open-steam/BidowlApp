@@ -3,6 +3,7 @@
 namespace OpenSteam\BidWebdavBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
+    OpenSteam\BidWebdavBundle\Webdav\BidWebdavBrowserPlugin,
     OpenSteam\BidWebdavBundle\Webdav\MyDocuments,
     OpenSteam\BidWebdavBundle\Webdav\MyBookmarks,
     Sabre\DAV\Server,
@@ -34,12 +35,12 @@ class WebdavController extends Controller
         $server->setBaseUri("/");
 
         // Support for html frontend
-        $browser = new \Sabre\DAV\Browser\Plugin();
-        $server->addPlugin($browser);
+        //$browser = new \Sabre\DAV\Browser\Plugin();
+        //$server->addPlugin($browser);
 
         // Support for html frontend
-        //$browser = new KoalaWebdavBrowserPlugin();
-        //$server->addPlugin($browser);
+        $browser = new BidWebdavBrowserPlugin();
+        $server->addPlugin($browser);
 
         //$tffp = new TemporaryFileFilterPlugin(PATH_TEMP);
         //$server->addPlugin($tffp);
