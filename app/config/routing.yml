@@ -1,0 +1,4 @@
+open_steam_bid_webdav:
+    resource: "@OpenSteamBidWebdavBundle/Resources/config/routing.yml"
+    prefix:   /
+

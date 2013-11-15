@@ -1,0 +1,7 @@
+parameters:
+#    open_steam_bid_webdav.example.class: OpenSteam\BidWebdavBundle\Example
+
+services:
+#    open_steam_bid_webdav.example:
+#        class: %open_steam_bid_webdav.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

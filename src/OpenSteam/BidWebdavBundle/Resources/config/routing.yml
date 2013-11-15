@@ -1,0 +1,13 @@
+open_steam_bid_webdav_index:
+    pattern:  /
+    defaults: { _controller: OpenSteamBidWebdavBundle:Webdav:index }
+
+open_steam_bid_webdav_id:
+    pattern:  /id/{id}/
+    defaults: { _controller: OpenSteamBidWebdavBundle:Webdav:id }
+
+open_steam_bid_webdav_folder:
+    pattern:  /{path}
+    defaults: { _controller: OpenSteamBidWebdavBundle:Webdav:index }
+    requirements:
+        path: ".+"
