@@ -13,7 +13,7 @@ use Sabre\DAV\Collection,
     steam_messageboard,
     Exception;
 
-require dirname(__FILE__) . "/../Lib/toolkit.php";
+require_once dirname(__FILE__) . "/../Lib/toolkit.php";
 
 class WebDavWiki extends Collection
 {

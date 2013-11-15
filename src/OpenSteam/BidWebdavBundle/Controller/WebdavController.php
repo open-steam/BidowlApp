@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     \steam_factory,
     \steam_container;
 
-require dirname(__FILE__) . "/../Lib/toolkit.php";
+require_once dirname(__FILE__) . "/../Lib/toolkit.php";
 
 define("STEAM_SERVER", "");
 define("STEAM_PORT", 1900);

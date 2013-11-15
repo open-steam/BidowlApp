@@ -14,7 +14,7 @@ use Sabre\DAV\Collection,
     steam_docextern,
     Exception;
 
-require dirname(__FILE__) . "/../Lib/toolkit.php";
+require_once dirname(__FILE__) . "/../Lib/toolkit.php";
 
 class WebDavSteamContainer extends Collection
 {
