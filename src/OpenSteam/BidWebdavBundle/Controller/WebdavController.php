@@ -7,23 +7,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     OpenSteam\BidWebdavBundle\Webdav\MyDocuments,
     OpenSteam\BidWebdavBundle\Webdav\MyBookmarks,
     Sabre\DAV\Server,
-    \steam_connector;
+    \steam_connector,
+    \steam_factory,
+    \steam_container;
+
+require dirname(__FILE__) . "/../Lib/toolkit.php";
 
 class WebdavController extends Controller
 {
     public function indexAction($path = "")
     {
-        //$kcHelper = new KoalaCompartiblityHelper();
-
-        //if(!WEBDAV_ENABLED){
-        //    include "../../bad_link.php";
-        //}
-
         if(!$this->_httpAuth()){
             exit;
         }
-
-        /*$portal = $kcHelper->getPortal();*/
 
         $root = array(
             new MyDocuments(),
@@ -33,6 +29,53 @@ class WebdavController extends Controller
         $server = new Server($root);
 
         $server->setBaseUri("/");
+
+        // Support for html frontend
+        $browser = new \Sabre\DAV\Browser\Plugin();
+        $server->addPlugin($browser);
+
+        // Support for html frontend
+        $browser = new BidWebdavBrowserPlugin();
+        $server->addPlugin($browser);
+
+        //$tffp = new TemporaryFileFilterPlugin(PATH_TEMP);
+        //$server->addPlugin($tffp);
+
+        // And off we go!
+        $server->exec();
+        exit;
+    }
+
+    public function idAction($id) {
+        if(!$this->_httpAuth()){
+            exit;
+        }
+
+        $steamContainer = steam_factory::get_object($GLOBALS["STEAM"]->get_id(), $id);
+
+        $root = array();
+        if ($steamContainer instanceof steam_container) {
+            try {
+                $objects = $steamContainer->get_inventory();
+            } catch (Exception $e) {
+                throw new \Sabre\DAV\Exception($e->getMessage());
+            }
+
+            $user = $GLOBALS["STEAM"]->get_current_steam_user();
+            $showHidden = ($user->get_attribute("EXPLORER_SHOW_HIDDEN_DOCUMENTS") === "TRUE" ? true : false);
+
+            foreach ($objects as $object) {
+                $obj = createChild($object, $showHidden);
+
+                if ($obj) {
+                   $root[] = $obj;
+                }
+            }
+        }
+
+        $server = new Server($root);
+
+        $server->setBaseUri("/id/" . $id . "/");
 
         // Support for html frontend
         //$browser = new \Sabre\DAV\Browser\Plugin();

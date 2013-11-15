@@ -16,7 +16,7 @@ function getObjectName($steamObject)
     return str_replace("?", "", $name);
 }
 
-function createChild ($object, $showHidden = true) {
+function createChild ($object, $showHidden = false, $followLink = false) {
     if (!$showHidden) {
         if ($object->get_attribute("bid:hidden") === "1") {
             return false;
@@ -45,20 +45,28 @@ function createChild ($object, $showHidden = true) {
     } else if ($object instanceof steam_document) {
         return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamFile($object);
     } else if ($object instanceof steam_exit) {
-        $object = $object->get_link_object();
-        if ($object instanceof steam_container) {
-            return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamContainer($object);
-        } else if ($object instanceof steam_document) {
-            return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamFile($object);
+        if ($followLink) {
+            $object = $object->get_link_object();
+            if ($object instanceof steam_container) {
+                return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamContainer($object);
+            } else if ($object instanceof steam_document) {
+                return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamFile($object);
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
     } else if ($object instanceof steam_link) {
-        $object = $object->get_link_object();
-        if ($object instanceof steam_container) {
-            return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamContainer($object);
-        } else if ($object instanceof steam_document) {
-            return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamFile($object);
+        if ($followLink) {
+            $object = $object->get_link_object();
+            if ($object instanceof steam_container) {
+                return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamContainer($object);
+            } else if ($object instanceof steam_document) {
+                return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamFile($object);
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
