@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 
 require_once dirname(__FILE__) . "/../Lib/toolkit.php";
 
-define("STEAM_SERVER", "");
+define("STEAM_SERVER", "localhost");
 define("STEAM_PORT", 1900);
 
 class WebdavController extends Controller
@@ -34,8 +34,8 @@ class WebdavController extends Controller
         $server->setBaseUri("/");
 
         // Support for html frontend
-        $browser = new \Sabre\DAV\Browser\Plugin();
-        $server->addPlugin($browser);
+        //$browser = new \Sabre\DAV\Browser\Plugin();
+        //$server->addPlugin($browser);
 
         // Support for html frontend
         $browser = new BidWebdavBrowserPlugin();
