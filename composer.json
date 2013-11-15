@@ -9,7 +9,7 @@
     "repositories": [
     {
         "type" : "vcs",
-        "url" : "git@github.com:open-steam/phpsteam.git"
+        "url" : "https://github.com/open-steam/phpsteam.git"
     }
     ],
     "require": {

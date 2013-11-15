@@ -13,6 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
 
 require dirname(__FILE__) . "/../Lib/toolkit.php";
 
+define("STEAM_SERVER", "");
+define("STEAM_PORT", 1900);
+
 class WebdavController extends Controller
 {
     public function indexAction($path = "")
@@ -98,7 +101,7 @@ class WebdavController extends Controller
         session_name("bid-webdav");
         session_start();
         if (isset($_SESSION["login"]) && isset($_SESSION["isLoggedin"]) && $_SESSION["isLoggedin"]) {
-            $GLOBALS["STEAM"] = steam_connector::connect("koala-dev.local", 1900, $_SESSION["login"], $_SESSION["password"]);
+            $GLOBALS["STEAM"] = steam_connector::connect(STEAM_SERVER, STEAM_PORT, $_SESSION["login"], $_SESSION["password"]);
             return true;
         } else {
             // Wenn nicht, untenstehende checks durchführen
@@ -110,7 +113,7 @@ class WebdavController extends Controller
                 return false;
             } else {
                 // Correct Login
-                $GLOBALS["STEAM"] = steam_connector::connect("koala-dev.local", 1900, $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
+                $GLOBALS["STEAM"] = steam_connector::connect(STEAM_SERVER, STEAM_PORT, $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
                 if (!$GLOBALS["STEAM"]->get_login_status()) {
                     sleep(10); // prevent brute force
                     header('WWW-Authenticate: Basic realm="BiD"');
