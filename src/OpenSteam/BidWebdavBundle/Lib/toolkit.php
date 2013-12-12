@@ -41,7 +41,7 @@ function createChild ($object, $showHidden = false, $followLink = false)
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavBidPyramiddiscussion($object);
         } elseif ($objType === "LARS_DESKTOP" || $objType === "LARS_ARCHIV" || $objType === "LARS_RESOURCE" || $objType === "LARS_SCHUELER" || $objType === "LARS_ABO" || $objType === "LARS_MESSAGES" || $objType === "LARS_FOLDER" || $objType === "ASSIGNMENT_PACKAGE" || $objType === "MOKO_OWN_SITE" || $objType === "MOKO_SUBSCRIPTION_CHECK") {
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamContainer($object);
-        } elseif (empty($objType) && (empty($collectionType) || $collectionType === "normal")) {
+        } elseif (empty($objType) && (empty($collectionType) || $collectionType === "normal" || $collectionType === "cluster")) {
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamContainer($object);
         } else {
             return false;
