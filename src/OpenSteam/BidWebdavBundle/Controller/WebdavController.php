@@ -20,7 +20,7 @@ class WebdavController extends Controller
 {
     public function indexAction($path = "")
     {
-        if(!$this->_httpAuth()){
+        if (!$this->_httpAuth()) {
             exit;
         }
 
@@ -49,8 +49,9 @@ class WebdavController extends Controller
         exit;
     }
 
-    public function idAction($id) {
-        if(!$this->_httpAuth()){
+    public function idAction($id)
+    {
+        if (!$this->_httpAuth()) {
             exit;
         }
 
@@ -102,6 +103,7 @@ class WebdavController extends Controller
         session_start();
         if (isset($_SESSION["login"]) && isset($_SESSION["isLoggedin"]) && $_SESSION["isLoggedin"]) {
             $GLOBALS["STEAM"] = steam_connector::connect(STEAM_SERVER, STEAM_PORT, $_SESSION["login"], $_SESSION["password"]);
+
             return true;
         } else {
             // Wenn nicht, untenstehende checks durchführen
@@ -110,6 +112,7 @@ class WebdavController extends Controller
                 sleep(10); // prevent brute force
                 header('WWW-Authenticate: Basic realm="BiD"');
                 header('HTTP/1.0 401 Unauthorized');
+
                 return false;
             } else {
                 // Correct Login
@@ -118,11 +121,13 @@ class WebdavController extends Controller
                     sleep(10); // prevent brute force
                     header('WWW-Authenticate: Basic realm="BiD"');
                     header('HTTP/1.0 401 Unauthorized');
+
                     return false;
                 }
                 $_SESSION["login"] = $_SERVER['PHP_AUTH_USER'];
                 $_SESSION["password"] = $_SERVER['PHP_AUTH_PW'];
                 $_SESSION["isLoggedin"] = true;
+
                 return true;
             }
         }
