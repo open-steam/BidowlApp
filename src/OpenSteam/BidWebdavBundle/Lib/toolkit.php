@@ -3,8 +3,8 @@
 function getObjectName($steamObject)
 {
     $id = $steamObject->get_id();
-    $name = $steamObject->get_attribute(OBJ_NAME);
-    $desc = urldecode($steamObject->get_attribute(OBJ_DESC));
+    $name = urldecode($steamObject->get_attribute(OBJ_NAME));
+    $desc = $steamObject->get_attribute(OBJ_DESC);
     $identifier = $steamObject->get_identifier();
 
     if (!empty($desc) && $name != $desc) {
