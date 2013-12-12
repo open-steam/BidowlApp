@@ -39,7 +39,7 @@ function createChild ($object, $showHidden = false, $followLink = false)
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavWiki($object);
         } elseif ($objType === "container_pyramiddiscussion") {
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavBidPyramiddiscussion($object);
-        } elseif ($objType === "LARS_DESKTOP" || $objType === "LARS_ARCHIV") {
+        } elseif ($objType === "LARS_DESKTOP" || $objType === "LARS_ARCHIV" || $objType === "LARS_RESOURCE") {
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamContainer($object);
         } elseif (empty($objType) && (empty($collectionType) || $collectionType === "normal")) {
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamContainer($object);
