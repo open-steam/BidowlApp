@@ -20,6 +20,7 @@
         "symfony/monolog-bundle": "2.3.*",
         "sensio/distribution-bundle": "2.3.*",
         "sensio/generator-bundle": "2.3.*",
+        "monolog/monolog": "dev-master",
         "open-steam/phpsteam" : "dev-master",
         "sabre/dav" : "1.8.*"
     },
