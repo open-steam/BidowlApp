@@ -33,13 +33,22 @@ class WebdavController extends Controller
 
         $server->setBaseUri("/");
 
-        // Support for html frontend
-        //$browser = new \Sabre\DAV\Browser\Plugin();
-        //$server->addPlugin($browser);
+        // Support for LOCK and UNLOCK
+        $lockBackend = new \Sabre\DAV\Locks\Backend\File('/tmp/locksdb');
+        $lockPlugin = new \Sabre\DAV\Locks\Plugin($lockBackend);
+        $server->addPlugin($lockPlugin);
+
+        // Temporary file filter
+        $tempFF = new \Sabre\DAV\TemporaryFileFilterPlugin('/tmp');
+        $server->addPlugin($tempFF);
 
         // Support for html frontend
-        $browser = new BidWebdavBrowserPlugin();
+        $browser = new \Sabre\DAV\Browser\Plugin();
         $server->addPlugin($browser);
+
+        // Support for html frontend
+        //$browser = new BidWebdavBrowserPlugin();
+        //$server->addPlugin($browser);
 
         //$tffp = new TemporaryFileFilterPlugin(PATH_TEMP);
         //$server->addPlugin($tffp);
@@ -109,7 +118,7 @@ class WebdavController extends Controller
             // Wenn nicht, untenstehende checks durchführen
             if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] === "" || $_SERVER['PHP_AUTH_PW'] === "") {
                 // User abort
-                sleep(10); // prevent brute force
+                //sleep(10); // prevent brute force
                 header('WWW-Authenticate: Basic realm="BiD"');
                 header('HTTP/1.0 401 Unauthorized');
 
@@ -118,7 +127,7 @@ class WebdavController extends Controller
                 // Correct Login
                 $GLOBALS["STEAM"] = steam_connector::connect(STEAM_SERVER, STEAM_PORT, $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
                 if (!$GLOBALS["STEAM"]->get_login_status()) {
-                    sleep(10); // prevent brute force
+                    //sleep(10); // prevent brute force
                     header('WWW-Authenticate: Basic realm="BiD"');
                     header('HTTP/1.0 401 Unauthorized');
 

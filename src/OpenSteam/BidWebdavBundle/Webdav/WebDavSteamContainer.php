@@ -2,6 +2,7 @@
 namespace OpenSteam\BidWebdavBundle\Webdav;
 
 use Sabre\DAV\Collection,
+    Sabre\DAV\IQuota,
     MimetypeHelper,
     steam_document,
     steam_container,
@@ -16,20 +17,22 @@ use Sabre\DAV\Collection,
 
 require_once dirname(__FILE__) . "/../Lib/toolkit.php";
 
-class WebDavSteamContainer extends Collection
+class WebDavSteamContainer extends Collection //implements IQuota
 {
 
     protected $steamContainer;
     protected $name;
 
-    public function __construct($steamContainer) {
+    public function __construct($steamContainer)
+    {
         if (!($steamContainer instanceof steam_container)) {
             throw new \Sabre\DAV\Exception('Only instances of steam_container allowed to be passed in the container argument');
         }
         $this->steamContainer = $steamContainer;
     }
 
-    public function delete() {
+    public function delete()
+    {
         if ($this->steamContainer->check_access_write()) {
             $this->steamContainer->delete();
         } else {
@@ -37,7 +40,8 @@ class WebDavSteamContainer extends Collection
         }
     }
 
-    public function getChildren() {
+    public function getChildren()
+    {
         $result = array();
 
         try {
@@ -60,29 +64,33 @@ class WebDavSteamContainer extends Collection
         return $result;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return getObjectName($this->steamContainer);
     }
 
-    public function setName($newName){
-       /* if ($this->steamContainer->check_access_write()) {
-            //$this->name = $newName;
-            $this->steamContainer->set_name($newName);
-            return $newName;
+    public function setName($newName)
+    {
+        if ($this->steamContainer->check_access_write()) {
+            setObjectName($this->steamContainer, $newName);
+
+            return $this->getName();
         } else {
             parent::setName($newName);
-        }*/
+        }
     }
 
-    public function getLastModified() {
+    public function getLastModified()
+    {
         return $this->steamContainer->get_attribute(OBJ_LAST_CHANGED);
     }
 
-    public function createDirectory($name)  {
+    public function createDirectory($name)
+    {
         if ($this->steamContainer->check_access_insert()) {
             $name = purifyName($name);
             try {
-                steam_factory::create_root($GLOBALS["STEAM"]->get_id(), $name, $this->steamContainer);
+                steam_factory::create_room($GLOBALS["STEAM"]->get_id(), $name, $this->steamContainer);
             } catch (Exception $e) {
                 throw new \Sabre\DAV\Exception($e->getMessage());
             }
@@ -92,12 +100,13 @@ class WebDavSteamContainer extends Collection
     }
 
      /*
-     * @param string $name Name of the file
-     * @param resource|string $data Initial payload
+     * @param  string          $name Name of the file
+     * @param  resource|string $data Initial payload
      * @return null|string
      *
      */
-    public function createFile($name, $data = null) {
+    public function createFile($name, $data = null)
+    {
         if ($this->steamContainer->check_access_insert()) {
             $name = purifyName($name);
             $mimetype = MimetypeHelper::get_instance()->getMimeType($name);
@@ -107,11 +116,16 @@ class WebDavSteamContainer extends Collection
             } catch (Exception $e) {
                 throw new \Sabre\DAV\Exception($e->getMessage());
             }
+
             return $name;
         } else {
             parent::createFile($name, $data);
         }
     }
 
+/*    public function getQuotaInfo()
+    {
+        return array(1000000, 1000000);
+    }
+*/
 }
-

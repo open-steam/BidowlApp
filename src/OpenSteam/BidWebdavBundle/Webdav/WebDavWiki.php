@@ -21,14 +21,16 @@ class WebDavWiki extends Collection
     protected $steamContainer;
     protected $name;
 
-    public function __construct($steamContainer) {
+    public function __construct($steamContainer)
+    {
         if (!($steamContainer instanceof steam_container)) {
             throw new \Sabre\DAV\Exception('Only instances of steam_container allowed to be passed in the container argument');
         }
         $this->steamContainer = $steamContainer;
     }
 
-    public function delete() {
+    public function delete()
+    {
         if ($this->steamContainer->check_access_write()) {
             $this->steamContainer->delete();
         } else {
@@ -36,7 +38,8 @@ class WebDavWiki extends Collection
         }
     }
 
-    public function getChildren() {
+    public function getChildren()
+    {
         $result = array();
 
         try {
@@ -56,27 +59,29 @@ class WebDavWiki extends Collection
         return $result;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return getObjectName($this->steamContainer) . ".wiki";
     }
 
-    public function setName($newName){
-/*        if ($this->steamContainer->check_access_write()) {
-            //$this->name = $newName;
-            $this->steamContainer->set_name($newName);
-            return $newName;
+    public function setName($newName)
+    {
+        if ($this->steamContainer->check_access_write()) {
+            setObjectName($this->steamContainer, $newName);
+
+            return $this->getName();
         } else {
             parent::setName($newName);
-        }*/
+        }
     }
 
-    public function getLastModified() {
+    public function getLastModified()
+    {
         return $this->steamContainer->get_attribute(OBJ_LAST_CHANGED);
     }
 
-
-
-    public function createDirectory($name)  {
+    public function createDirectory($name)
+    {
      /*   if ($this->steamContainer->check_access_insert()) {
             $name = $this->purifyName($name);
             try {
@@ -90,12 +95,13 @@ class WebDavWiki extends Collection
     }
 
      /*
-     * @param string $name Name of the file
-     * @param resource|string $data Initial payload
+     * @param  string          $name Name of the file
+     * @param  resource|string $data Initial payload
      * @return null|string
      *
      */
-    public function createFile($name, $data = null) {
+    public function createFile($name, $data = null)
+    {
       /*  $data = stream_get_contents($data);
         var_dump(strlen($data));
         var_dump(MAX_UPLOAD_FILESIZE);
@@ -112,6 +118,7 @@ class WebDavWiki extends Collection
             } catch (Exception $e) {
                 throw new \Sabre\DAV\Exception($e->getMessage());
             }
+
             return $name;
         } else {
             parent::createFile($name, $data);

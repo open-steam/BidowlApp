@@ -7,31 +7,37 @@ use Sabre\DAV\File,
 
 require_once dirname(__FILE__) . "/../Lib/toolkit.php";
 
-class WebDavSteamFile extends File{
-
+class WebDavSteamFile extends File
+{
     protected $steam_obj;
 
-    public function __construct(steam_object $steam_obj) {
+    public function __construct(steam_object $steam_obj)
+    {
         $this->steam_obj = $steam_obj;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return getObjectName($this->steam_obj);
     }
 
-    public function getSize() {
+    public function getSize()
+    {
         return $this->steam_obj->get_content_size();
     }
 
-    public function getContentType() {
-        return MimetypeHelper::get_instance()->getMimeType($this->steam_obj->get_name());
+    public function getContentType()
+    {
+        return $this->steam_obj->get_mimetype();
     }
 
-    public function get() {
+    public function get()
+    {
         return $this->steam_obj->get_content();
     }
 
-    public function put($data){
+    public function put($data)
+    {
         if ($this->steam_obj->check_access_write()) {
             $this->steam_obj->set_content($data);
         } else {
@@ -39,7 +45,8 @@ class WebDavSteamFile extends File{
         }
     }
 
-    public function delete() {
+    public function delete()
+    {
         if ($this->steam_obj->check_access_write()) {
             $this->steam_obj->delete();
         } else {
@@ -47,19 +54,20 @@ class WebDavSteamFile extends File{
         }
     }
 
-    public function getLastModified() {
+    public function getLastModified()
+    {
         return $this->steam_obj->get_attribute(DOC_LAST_MODIFIED);
     }
 
-    public function setName($newName){
-        /*if ($this->steam_obj->check_access_write()) {
-            $this->name = $newName;
-            $this->steam_obj->set_name($newName);
-            return $newName;
+    public function setName($newName)
+    {
+        if ($this->steam_obj->check_access_write()) {
+            setObjectName($this->steam_obj, $newName);
+
+            return $this->getName();
         } else {
             parent::setName($newName);
-        }*/
+        }
     }
-
 
 }
