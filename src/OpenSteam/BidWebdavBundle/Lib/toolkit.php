@@ -14,7 +14,46 @@ function getObjectName($steamObject)
         $name = $name . " (#". $id .")";
     }
 
-    return str_replace("?", "", $name);
+    $name = str_replace("?", "", $name);
+
+    if ($steamObject instanceof steam_document) {
+        $mimeType = $steamObject->get_mimetype();
+        if ($mimeType === "application/octet-stream") {
+            return $name;
+        }
+        $extension = MimetypeHelper::get_instance()->getExtension($mimeType);
+        if ($extension) {
+            if ($extension === "jpeg") {
+                if (strstr(strtolower($name), ".jpg")) {
+                    return $name;
+                }
+            }
+            if (!strstr(strtolower($name), "." . $extension)) {
+                $name .= "." . $extension;
+            }
+        }
+    }
+
+    return $name;
+}
+
+function setObjectName($steamObject, $newName)
+{
+   if ($steamObject instanceof steam_document) {
+
+   } else {
+        $newName = preg_replace('/^(.*).forum$/', '$1', $newName);
+        $newName = preg_replace('/^(.*).galerie$/', '$1', $newName);
+        $newName = preg_replace('/^(.*).portal$/', '$1', $newName);
+        $newName = preg_replace('/^(.*).pyramide$/', '$1', $newName);
+        $newName = preg_replace('/^(.*).fragebogen$/', '$1', $newName);
+        $newName = preg_replace('/^(.*).wiki$/', '$1', $newName);
+   }
+
+   $steamObject->set_attribute(OBJ_DESC, "");
+   $steamObject->set_name($newName);
+
+   return $newName;
 }
 
 function createChild ($object, $showHidden = false, $followLink = false)
@@ -39,9 +78,11 @@ function createChild ($object, $showHidden = false, $followLink = false)
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavWiki($object);
         } elseif ($objType === "container_pyramiddiscussion") {
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavBidPyramiddiscussion($object);
-        } elseif ($objType === "LARS_DESKTOP" || $objType === "LARS_ARCHIV" || $objType === "LARS_RESOURCE" || $objType === "LARS_SCHUELER" || $objType === "LARS_ABO" || $objType === "LARS_MESSAGES" || $objType === "LARS_FOLDER" || $objType === "ASSIGNMENT_PACKAGE" || $objType === "MOKO_OWN_SITE" || $objType === "MOKO_SUBSCRIPTION_CHECK") {
+        }
+        /*elseif ($objType === "LARS_DESKTOP" || $objType === "LARS_ARCHIV" || $objType === "LARS_RESOURCE" || $objType === "LARS_SCHUELER" || $objType === "LARS_ABO" || $objType === "LARS_MESSAGES" || $objType === "LARS_FOLDER" || $objType === "ASSIGNMENT_PACKAGE" || $objType === "MOKO_OWN_SITE" || $objType === "MOKO_SUBSCRIPTION_CHECK") {
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamContainer($object);
-        } elseif (empty($objType) && (empty($collectionType) || $collectionType === "normal" || $collectionType === "cluster")) {
+        }*/
+        elseif (empty($objType) && (empty($collectionType) || $collectionType === "normal" || $collectionType === "cluster")) {
             return new \OpenSteam\BidWebdavBundle\Webdav\WebDavSteamContainer($object);
         } else {
             return false;

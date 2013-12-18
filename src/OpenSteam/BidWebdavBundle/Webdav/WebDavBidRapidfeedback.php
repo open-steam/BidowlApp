@@ -57,14 +57,13 @@ class WebDavBidRapidfeedback extends File
 
     public function setName($newName)
     {
-        /*if ($this->steam_obj->check_access_write()) {
-            $this->name = $newName;
-            $this->steam_obj->set_name($newName);
-            return $newName;
+        if ($this->steam_obj->check_access_write()) {
+            setObjectName($this->steam_obj, $newName);
+
+            return $this->getName();
         } else {
             parent::setName($newName);
-        }*/
+        }
     }
-
 
 }
