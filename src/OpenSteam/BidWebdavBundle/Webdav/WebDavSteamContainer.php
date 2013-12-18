@@ -90,13 +90,13 @@ class WebDavSteamContainer extends Collection //implements IQuota
         if ($this->steamContainer->check_access_insert()) {
             $name = purifyName($name);
             try {
-                steam_factory::create_room($GLOBALS["STEAM"]->get_id(), $name, $this->steamContainer);
+                return createContainerObject($name, $this->steamContainer);
             } catch (Exception $e) {
                 throw new \Sabre\DAV\Exception($e->getMessage());
             }
-        } else {
-            parent::createDirectory($name);
         }
+
+        parent::createDirectory($name);
     }
 
      /*
@@ -109,18 +109,18 @@ class WebDavSteamContainer extends Collection //implements IQuota
     {
         if ($this->steamContainer->check_access_insert()) {
             $name = purifyName($name);
-            $mimetype = MimetypeHelper::get_instance()->getMimeType($name);
+            $mimetype = MimetypeHelper::get_instance()->getMimeType(strtolower($name));
             try {
                 $steam_document = steam_factory::create_document($GLOBALS["STEAM"]->get_id(), $name, $data, $mimetype);
                 $steam_document->move($this->steamContainer);
+
+                return $name;
             } catch (Exception $e) {
                 throw new \Sabre\DAV\Exception($e->getMessage());
             }
-
-            return $name;
-        } else {
-            parent::createFile($name, $data);
         }
+
+        parent::createFile($name, $data);
     }
 
 /*    public function getQuotaInfo()
