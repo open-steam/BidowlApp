@@ -39,21 +39,53 @@ function getObjectName($steamObject)
 
 function setObjectName($steamObject, $newName)
 {
-   if ($steamObject instanceof steam_document) {
+    if ($steamObject instanceof steam_document) {
 
-   } else {
-        $newName = preg_replace('/^(.*).forum$/', '$1', $newName);
-        $newName = preg_replace('/^(.*).galerie$/', '$1', $newName);
-        $newName = preg_replace('/^(.*).portal$/', '$1', $newName);
-        $newName = preg_replace('/^(.*).pyramide$/', '$1', $newName);
-        $newName = preg_replace('/^(.*).fragebogen$/', '$1', $newName);
-        $newName = preg_replace('/^(.*).wiki$/', '$1', $newName);
-   }
+    } else {
+        if (preg_match('/^(.*).wiki$/', $newName)) {
+            $newName = preg_replace('/^(.*).wiki$/', '$1', $newName);
+            $steamObject->set_attribute("OBJ_TYPE", "container_wiki_koala");
+            //$user = \lms_steam::get_current_user();
+            //$koala_wiki = new \koala_wiki($wiki);
+            //$koala_wiki->set_access(PERMISSION_PRIVATE_READONLY, 0, 0, $user);
+        } elseif (preg_match('/^(.*).galerie$/', $newName)) {
+            $newName = preg_replace('/^(.*).galerie$/', '$1', $newName);
+            $steamObject->set_attribute("bid:collectiontype", "gallery");
+        } else {
+            $newName = preg_replace('/^(.*).forum$/', '$1', $newName);
+            $newName = preg_replace('/^(.*).galerie$/', '$1', $newName);
+            $newName = preg_replace('/^(.*).portal$/', '$1', $newName);
+            $newName = preg_replace('/^(.*).pyramide$/', '$1', $newName);
+            $newName = preg_replace('/^(.*).fragebogen$/', '$1', $newName);
+            $newName = preg_replace('/^(.*).wiki$/', '$1', $newName);
+        }
+    }
 
    $steamObject->set_attribute(OBJ_DESC, "");
    $steamObject->set_name($newName);
 
    return $newName;
+}
+
+function createContainerObject($name, $env)
+{
+
+/*    if (preg_match('/^(.*).wiki$/', $name)) {
+        $newName = preg_replace('/^(.*).wiki$/', '$1', $name);
+        $wiki = steam_factory::create_room($GLOBALS["STEAM"]->get_id(), $newName, $env);
+        $wiki->set_attribute("OBJ_TYPE", "container_wiki_koala");
+        //$user = \lms_steam::get_current_user();
+        //$koala_wiki = new \koala_wiki($wiki);
+        //$koala_wiki->set_access(PERMISSION_PRIVATE_READONLY, 0, 0, $user);
+    } elseif (preg_match('/^(.*).galerie$/', $name)) {
+        $newName = preg_replace('/^(.*).galerie$/', '$1', $name);
+        $gallery = steam_factory::create_room($GLOBALS["STEAM"]->get_id(), $newName, $env);
+        $gallery->set_attribute("bid:collectiontype", "gallery");
+    } else {*/
+
+    $newObject = steam_factory::create_room($GLOBALS["STEAM"]->get_id(), $name, $env);
+
+    return setObjectName($newObject, $name);
 }
 
 function createChild ($object, $showHidden = false, $followLink = false)
