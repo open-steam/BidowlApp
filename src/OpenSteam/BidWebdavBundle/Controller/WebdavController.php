@@ -12,9 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     \steam_container;
 
 require_once dirname(__FILE__) . "/../Lib/toolkit.php";
-
-define("STEAM_SERVER", "localhost");
-define("STEAM_PORT", 1900);
+require_once dirname(__FILE__) . '/../etc/default.def.php';
 
 class WebdavController extends Controller
 {
@@ -34,26 +32,22 @@ class WebdavController extends Controller
         $server->setBaseUri("/");
 
         // Support for LOCK and UNLOCK
-        $lockBackend = new \Sabre\DAV\Locks\Backend\File('/tmp/locksdb');
+        $lockBackend = new \Sabre\DAV\Locks\Backend\File(PATH_TEMP . '/locksdb');
         $lockPlugin = new \Sabre\DAV\Locks\Plugin($lockBackend);
         $server->addPlugin($lockPlugin);
 
         // Temporary file filter
-        $tempFF = new \Sabre\DAV\TemporaryFileFilterPlugin('/tmp');
+        $tempFF = new \Sabre\DAV\TemporaryFileFilterPlugin(PATH_TEMP);
         $server->addPlugin($tempFF);
 
-        // Support for html frontend
-        $browser = new \Sabre\DAV\Browser\Plugin();
-        $server->addPlugin($browser);
+        if (defined('WEBDAV_FRONTEND_URL')) {
+            $browser = new BidWebdavBrowserPlugin();
+            $server->addPlugin($browser);
+        } else {
+            $browser = new \Sabre\DAV\Browser\Plugin();
+            $server->addPlugin($browser);
+        }
 
-        // Support for html frontend
-        //$browser = new BidWebdavBrowserPlugin();
-        //$server->addPlugin($browser);
-
-        //$tffp = new TemporaryFileFilterPlugin(PATH_TEMP);
-        //$server->addPlugin($tffp);
-
-        // And off we go!
         $server->exec();
         exit;
     }
@@ -81,27 +75,34 @@ class WebdavController extends Controller
                 $obj = createChild($object, $showHidden);
 
                 if ($obj) {
-                   $root[] = $obj;
+                    $root[] = $obj;
                 }
             }
+        } else {
+            throw new \Sabre\DAV\Exception("404");
         }
 
         $server = new Server($root);
 
         $server->setBaseUri("/id/" . $id . "/");
 
-        // Support for html frontend
-        //$browser = new \Sabre\DAV\Browser\Plugin();
-        //$server->addPlugin($browser);
+        // Support for LOCK and UNLOCK
+        $lockBackend = new \Sabre\DAV\Locks\Backend\File(PATH_TEMP . '/locksdb');
+        $lockPlugin = new \Sabre\DAV\Locks\Plugin($lockBackend);
+        $server->addPlugin($lockPlugin);
 
-        // Support for html frontend
-        $browser = new BidWebdavBrowserPlugin();
-        $server->addPlugin($browser);
+        // Temporary file filter
+        $tempFF = new \Sabre\DAV\TemporaryFileFilterPlugin(PATH_TEMP);
+        $server->addPlugin($tempFF);
 
-        //$tffp = new TemporaryFileFilterPlugin(PATH_TEMP);
-        //$server->addPlugin($tffp);
+        if (defined('WEBDAV_FRONTEND_URL')) {
+            $browser = new BidWebdavBrowserPlugin();
+            $server->addPlugin($browser);
+        } else {
+            $browser = new \Sabre\DAV\Browser\Plugin();
+            $server->addPlugin($browser);
+        }
 
-        // And off we go!
         $server->exec();
         exit;
     }

@@ -108,6 +108,14 @@ class WebDavSteamContainer extends Collection //implements IQuota
     public function createFile($name, $data = null)
     {
         if ($this->steamContainer->check_access_insert()) {
+
+            if (preg_match('/^(.*).forum$/', $name) ||
+                preg_match('/^(.*).portal$/', $name) ||
+                preg_match('/^(.*).pyramide$/', $name) ||
+                preg_match('/^(.*).fragebogen$/', $name)) {
+                parent::createFile($name, $data);
+            }
+
             $name = purifyName($name);
             $mimetype = MimetypeHelper::get_instance()->getMimeType(strtolower($name));
             try {

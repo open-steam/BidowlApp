@@ -61,6 +61,7 @@ class WebDavSteamFile extends File
 
     public function setName($newName)
     {
+        error_log("rename:" . $newName);
         if ($this->steam_obj->check_access_write()) {
             setObjectName($this->steam_obj, $newName);
 
