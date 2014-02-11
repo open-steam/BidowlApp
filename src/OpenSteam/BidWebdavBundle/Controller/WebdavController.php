@@ -84,7 +84,7 @@ class WebdavController extends Controller
 
         $server = new Server($root);
 
-        $server->setBaseUri("/id/" . $id . "/");
+        $server->setBaseUri(WEBDAV_BASE_URI . "id/" . $id . "/");
 
         // Support for LOCK and UNLOCK
         $lockBackend = new \Sabre\DAV\Locks\Backend\File(PATH_TEMP . '/locksdb');
