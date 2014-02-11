@@ -35,4 +35,13 @@ class MyBookmarks extends WebDavSteamContainer{
 
         return $result;
     }
+
+    public function createFile($name, $data = null)
+    {
+        throw new Exception\Forbidden('Permission denied to create file (filename ' . $name . ')');
+    }
+
+    public function createDirectory($name) {
+        throw new Exception\Forbidden('Permission denied to create directory');
+    }
 }
