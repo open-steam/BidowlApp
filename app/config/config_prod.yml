@@ -17,7 +17,7 @@ monolog:
         streamed:
             type:  stream
             path:  %kernel.logs_dir%/%kernel.environment%.log
-            level: debug
+            level: error
         buffered:
             type:    buffer
             handler: swift
@@ -26,4 +26,4 @@ monolog:
             from_email: error@webdav.bid-owl.de
             to_email:   nicke@uni-paderborn.de
             subject:    An Error Occurred!
-            level:      debug
+            level:      error
