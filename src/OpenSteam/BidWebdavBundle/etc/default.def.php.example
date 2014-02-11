@@ -4,6 +4,7 @@ define("STEAM_PORT", 1900);
 
 define("PATH_TEMP", "/tmp");
 
+define("WEBDAV_BASE_URI", "/");
 define("WEBDAV_FRONTEND_URL", "http://www.bid-owl.de/explorer/ViewDocument/943035/");
 
 // If CONTENT_PROVIDER_DATABASE, get_content to load data using direct database access

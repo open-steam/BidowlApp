@@ -29,7 +29,7 @@ class WebdavController extends Controller
 
         $server = new Server($root);
 
-        $server->setBaseUri("/");
+        $server->setBaseUri(WEBDAV_BASE_URI);
 
         // Support for LOCK and UNLOCK
         $lockBackend = new \Sabre\DAV\Locks\Backend\File(PATH_TEMP . '/locksdb');
@@ -120,7 +120,7 @@ class WebdavController extends Controller
             if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] === "" || $_SERVER['PHP_AUTH_PW'] === "") {
                 // User abort
                 //sleep(10); // prevent brute force
-                header('WWW-Authenticate: Basic realm="BiD"');
+                header('WWW-Authenticate: Basic realm="' . $_SERVER['SERVER_NAME'] . '"');
                 header('HTTP/1.0 401 Unauthorized');
 
                 return false;
@@ -129,7 +129,7 @@ class WebdavController extends Controller
                 $GLOBALS["STEAM"] = steam_connector::connect(STEAM_SERVER, STEAM_PORT, $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
                 if (!$GLOBALS["STEAM"]->get_login_status()) {
                     //sleep(10); // prevent brute force
-                    header('WWW-Authenticate: Basic realm="BiD"');
+                    header('WWW-Authenticate: Basic realm="' . $_SERVER['SERVER_NAME'] . '"');
                     header('HTTP/1.0 401 Unauthorized');
 
                     return false;
