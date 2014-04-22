@@ -6,6 +6,22 @@ open_steam_bid_webdav_id:
     pattern:  /id/{id}/
     defaults: { _controller: OpenSteamBidWebdavBundle:Webdav:id }
 
+open_steam_bid_webdav_id_path:
+    pattern:  /id/{id}/{path}
+    defaults: { _controller: OpenSteamBidWebdavBundle:Webdav:id }
+    requirements:
+        path: ".+"
+
+open_steam_bid_webdav_home:
+    pattern:  /home/{login}/
+    defaults: { _controller: OpenSteamBidWebdavBundle:Webdav:home }
+
+open_steam_bid_webdav_home_path:
+    pattern:  /home/{login}/{path}
+    defaults: { _controller: OpenSteamBidWebdavBundle:Webdav:home }
+    requirements:
+        path: ".+"
+
 open_steam_bid_webdav_folder:
     pattern:  /{path}
     defaults: { _controller: OpenSteamBidWebdavBundle:Webdav:index }

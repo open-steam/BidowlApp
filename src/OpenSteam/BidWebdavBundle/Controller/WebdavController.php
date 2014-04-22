@@ -52,6 +52,48 @@ class WebdavController extends Controller
         exit;
     }
 
+    public function homeAction($login = "")
+    {
+        if (!$this->_httpAuth()) {
+            exit;
+        }
+
+        $user = $GLOBALS["STEAM"]->get_current_steam_user();
+        if ($login !== $user->get_name()) {
+            throw new \Sabre\DAV\Exception\Forbidden('No read access.');
+            exit;
+        }
+
+        $root = array(
+            new MyDocuments(),
+            new MyBookmarks()
+        );
+
+        $server = new Server($root);
+
+        $server->setBaseUri(WEBDAV_BASE_URI . "home/" . $login . "/");
+
+        // Support for LOCK and UNLOCK
+        $lockBackend = new \Sabre\DAV\Locks\Backend\File(PATH_TEMP . '/locksdb');
+        $lockPlugin = new \Sabre\DAV\Locks\Plugin($lockBackend);
+        $server->addPlugin($lockPlugin);
+
+        // Temporary file filter
+        $tempFF = new \Sabre\DAV\TemporaryFileFilterPlugin(PATH_TEMP);
+        $server->addPlugin($tempFF);
+
+        if (defined('WEBDAV_FRONTEND_URL')) {
+            $browser = new BidWebdavBrowserPlugin();
+            $server->addPlugin($browser);
+        } else {
+            $browser = new \Sabre\DAV\Browser\Plugin();
+            $server->addPlugin($browser);
+        }
+
+        $server->exec();
+        exit;
+    }
+
     public function idAction($id)
     {
         if (!$this->_httpAuth()) {
