@@ -9,4 +9,5 @@
 /vendor/
 /bin/
 /composer.phar
+/composer.lock
 /src/OpenSteam/BidWebdavBundle/etc/default.def.php
